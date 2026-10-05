@@ -1,0 +1,6 @@
+build/
+rd-term
+*.dat
+__pycache__/
+.DS_Store
+video/

@@ -1,4 +1,4 @@
-# rdgeneric. `make` builds every platform.
+# rdgeneric. `make` builds every platform, `make test` checks them.
 CC      ?= clang
 # No fused multiply-add anywhere, so every platform rounds floats the same
 # way and the scripted demo plays out identically on all of them.
@@ -52,7 +52,10 @@ build/rdgeneric-x86.elf: Makefile platforms/baremetal/boot.S platforms/baremetal
 run-x86: build/rdgeneric-x86.elf
 	qemu-system-i386 -cpu 486 -kernel $< -m 64
 
+test:
+	tests/run.sh
+
 clean:
 	rm -rf build rd-term
 
-.PHONY: all clean run-x86
+.PHONY: all clean run-x86 test

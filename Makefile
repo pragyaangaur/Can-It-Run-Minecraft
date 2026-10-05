@@ -8,7 +8,7 @@ WASMLD  ?= /opt/homebrew/bin/wasm-ld
 CORE    = src/rd.c src/rd.h src/rd_demo.c src/rd_demo.h
 SRC     = src/rd.c src/rd_demo.c
 
-all: rd-term build/rdgeneric.html
+all: rd-term build/rdgeneric.html build/rdgeneric.pdf
 
 rd-term: platforms/term/term.c $(CORE)
 	$(CC) $(CFLAGS) -o $@ platforms/term/term.c $(SRC)
@@ -22,6 +22,21 @@ build/rd.wasm: platforms/web/wasm.c $(CORE)
 
 build/rdgeneric.html: platforms/web/shell.html build/rd.wasm tools/inline.py
 	python3 tools/inline.py platforms/web/shell.html build/rd.wasm $@
+
+# The PDF build: the same world, a small framebuffer, and the wasm turned
+# into plain JavaScript by wasm2js because PDFium has no WebAssembly.
+PDF_W ?= 192
+PDF_H ?= 120
+build/rd-pdf.wasm: platforms/web/wasm.c $(CORE)
+	@mkdir -p build
+	clang $(WASM) -DMAX_W=$(PDF_W) -DMAX_H=$(PDF_H) -Wl,--initial-memory=6291456 \
+	  -o $@ platforms/web/wasm.c $(SRC)
+
+build/rd-pdf.js: build/rd-pdf.wasm
+	wasm2js -O2 $< -o $@
+
+build/rdgeneric.pdf: build/rd-pdf.js platforms/pdf/runtime.js tools/make_pdf.py
+	python3 tools/make_pdf.py build/rd-pdf.js platforms/pdf/runtime.js $@ $(PDF_W) $(PDF_H)
 
 clean:
 	rm -rf build rd-term

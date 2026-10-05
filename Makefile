@@ -52,10 +52,14 @@ build/rdgeneric-x86.elf: Makefile platforms/baremetal/boot.S platforms/baremetal
 run-x86: build/rdgeneric-x86.elf
 	qemu-system-i386 -cpu 486 -kernel $< -m 64
 
+# The playable page on GitHub Pages, served from docs/.
+pages: build/rdgeneric.html
+	cp $< docs/index.html
+
 test:
 	tests/run.sh
 
 clean:
 	rm -rf build rd-term
 
-.PHONY: all clean run-x86 test
+.PHONY: all clean pages run-x86 test

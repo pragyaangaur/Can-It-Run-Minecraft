@@ -6,6 +6,8 @@ rdgeneric is Minecraft rd-132211, the first version Notch ever released (13 May 
 
 The same `src/rd.c` currently runs in six places. It plays in a terminal, it serves a shared world over telnet, it runs in a browser as a 20 KB WebAssembly module, it runs inside a PDF in Chrome, and it boots on a bare x86 PC with no operating system. It also compiles for the Raspberry Pi Pico, the Pico 2 and the Game Boy Advance, though nothing has been run on that hardware yet.
 
+**Play it in your browser: [pragyaangaur.github.io/Can-It-Run-Minecraft](https://pragyaangaur.github.io/Can-It-Run-Minecraft/)**
+
 ![The core rendering a hilly world with a second player in view](docs/native-hills.png)
 
 ## Where it runs

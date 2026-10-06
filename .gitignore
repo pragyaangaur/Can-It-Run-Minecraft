@@ -4,3 +4,6 @@ rd-term
 __pycache__/
 .DS_Store
 video/
+
+# Agent notes, kept local
+AGENTS.md

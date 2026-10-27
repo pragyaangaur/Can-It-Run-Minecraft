@@ -4,7 +4,7 @@
 
 rdgeneric is Minecraft rd-132211, the first version Notch ever released (13 May 2009), rewritten as one freestanding C file so that it can be dropped onto any screen. The idea is the one behind [doomgeneric](https://github.com/ozkl/doomgeneric). The core has no includes, no libc calls and no allocation, so a new platform only has to hand it a framebuffer and some key presses.
 
-The same `src/rd.c` currently runs in six places. It plays in a terminal, it serves a shared world over telnet, it runs in a browser as a 20 KB WebAssembly module, it runs inside a PDF in Chrome, and it boots on a bare x86 PC with no operating system. It also compiles for the Raspberry Pi Pico, the Pico 2 and the Game Boy Advance, though nothing has been run on that hardware yet.
+The same `src/rd.c` currently runs in six places. It plays in a terminal, it serves a shared world over telnet, it runs in a browser as a 20 KB WebAssembly module, it runs inside a PDF in Chrome, it boots on a bare x86 PC with no operating system, and it runs on a jailbroken Kindle Paperwhite 3 as part of [Inkwell](https://github.com/pragyaangaur/Inkwell). It also compiles for the Raspberry Pi Pico, the Pico 2 and the Game Boy Advance, though nothing has been run on that hardware yet.
 
 **Play it in your browser: [pragyaangaur.github.io/Can-It-Run-Minecraft](https://pragyaangaur.github.io/Can-It-Run-Minecraft/)**
 
@@ -19,11 +19,14 @@ The same `src/rd.c` currently runs in six places. It plays in a terminal, it ser
 | Browser | Canvas from a 20 KB wasm module built with plain clang, no Emscripten. The tab's favicon is a second live 32 by 32 view | Pointer lock or drag to look, touch controls on phones | Played in a Chromium pane, 341 by 256 renders in 7.8 ms |
 | PDF | 120 text fields, one per row, filled with six character groups that share a width in Chrome's field font | A text field's keystroke action and on-page buttons | Headless Chromium, 8 to 19 fps |
 | Bare-metal x86 | VGA mode 13h set by writing the card's registers, 6x6x6 colour cube with ordered dithering | PS/2 keyboard port, which reports key releases | QEMU with its 486, Pentium and qemu32 CPU models |
+| Kindle Paperwhite 3 | A 268 by 268 frame scaled 4x onto the e-ink panel, dithered to black and white with a 4 by 4 Bayer matrix so every frame can use the 190 ms A2 refresh, or 16 grey levels with a GRAY button | An on-screen pad on the touchscreen for moving, looking, digging and placing | Played on a real Kindle Paperwhite 3 running [Inkwell](https://github.com/pragyaangaur/Inkwell), whose `src/rd/rd.c` is this file |
 | Microcontrollers | Not written yet | Not written yet | Compiles only, see below |
 
 ![Two moments of the demo inside the PDF, in Chrome's own PDF viewer](docs/pdf-chromium.png)
 
 ![The bare-metal build in QEMU digging a pit, building a pillar under its own feet, then looking back at the pillar](docs/baremetal-qemu.png)
+
+<p align="center"><img src="docs/kindle.gif" width="320" alt="Walking and building in rd-132211 on the e-ink screen of a Kindle Paperwhite 3"></p>
 
 The PDF works the way [DoomPDF](https://github.com/ading2210/doompdf) does, with one change of route. PDFium runs JavaScript but has no WebAssembly, and DoomPDF dealt with that by building with a 2020 Emscripten that could still emit asm.js. rdgeneric compiles the same C to wasm with clang, then converts the module to plain JavaScript with binaryen's `wasm2js`. The PDF itself is written by `tools/make_pdf.py` with no PDF library. I searched for an earlier Minecraft that runs inside a PDF and found none.
 
